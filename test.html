@@ -16,6 +16,10 @@
                 <input type="text" class="form-control" id="username" placeholder="Entrez votre nom d'utilisateur">
             </div>
             <div class="form-group">
+                <label for="password">Mot de passe :</label>
+                <input type="password" class="form-control" id="password" placeholder="Entrez votre mot de passe">
+            </div>
+            <div class="form-group">
                 <label for="role">Sélectionnez un rôle :</label>
                 <select class="form-control" id="role">
                     <option value="admin">Administrateur</option>
@@ -36,16 +40,34 @@
 
             // Récupérer les valeurs saisies par l'utilisateur
             const username = document.getElementById("username").value;
+            const password = document.getElementById("password").value;
             const role = document.getElementById("role").value;
 
-            // Définir le cookie avec les informations saisies
-            document.cookie = "username=" + username + "; path=/";
-            document.cookie = "role=" + role + "; path=/";
-                if (role === "admin" && username === "test") {
-                  // Rediriger l'utilisateur vers une autre page par exemple
-                  window.location.href = "page_accueil.html";              
-                }
+            // Envoyer les données au serveur pour vérification
+            fetch('verification.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ username: username, password: password, role: role })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Si l'authentification est réussie, définir le cookie avec les informations saisies
+                    document.cookie = "username=" + username + "; path=/";
+                    document.cookie = "role=" + role + "; path=/";
 
+                    // Rediriger l'utilisateur vers une autre page par exemple
+                    window.location.href = "page_accueil.html";
+                } else {
+                    // Afficher un message d'erreur si l'authentification a échoué
+                    alert("Nom d'utilisateur ou mot de passe incorrect.");
+                }
+            })
+            .catch(error => {
+                console.error('Erreur lors de la vérification :', error);
+            });
         });
     </script>
 </body>
