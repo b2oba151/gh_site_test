@@ -43,31 +43,18 @@
             const password = document.getElementById("password").value;
             const role = document.getElementById("role").value;
 
-            // Envoyer les données au serveur pour vérification
-            fetch('verification.php', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ username: username, password: password, role: role })
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    // Si l'authentification est réussie, définir le cookie avec les informations saisies
-                    document.cookie = "username=" + username + "; path=/";
-                    document.cookie = "role=" + role + "; path=/";
+            // Vérifier les informations d'authentification côté client
+            if (role === "admin" && username === "test" && password === "password") {
+                // Si l'authentification réussit, définir le cookie avec les informations saisies
+                document.cookie = "username=" + username + "; path=/";
+                document.cookie = "role=" + role + "; path=/";
 
-                    // Rediriger l'utilisateur vers une autre page par exemple
-                    window.location.href = "page_accueil.html";
-                } else {
-                    // Afficher un message d'erreur si l'authentification a échoué
-                    alert("Nom d'utilisateur ou mot de passe incorrect.");
-                }
-            })
-            .catch(error => {
-                console.error('Erreur lors de la vérification :', error);
-            });
+                // Rediriger l'utilisateur vers une autre page par exemple
+                window.location.href = "page_accueil.html";
+            } else {
+                // Afficher un message d'erreur si l'authentification a échoué
+                alert("Nom d'utilisateur ou mot de passe incorrect.");
+            }
         });
     </script>
 </body>
